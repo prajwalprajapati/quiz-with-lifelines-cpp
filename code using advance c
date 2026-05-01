@@ -1,0 +1,138 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+struct Question
+{
+    string question;
+    string option1, option2, option3, option4;
+    int correctAnswer;
+};
+
+int main()
+{
+    Question quiz[3] =
+    {
+        {"What is the capital of India?",
+         "1. Mumbai", "2. Delhi", "3. Pune", "4. Chennai", 2},
+
+        {"Which language is used for C++ programming?",
+         "1. HTML", "2. Python", "3. C++", "4. CSS", 3},
+
+        {"Which planet is known as Red Planet?",
+         "1. Mars", "2. Venus", "3. Earth", "4. Jupiter", 1}
+    };
+
+    string name;
+    int score = 0;
+    int answer;
+
+    bool fiftyUsed = false;
+    bool skipUsed = false;
+    bool askAgainUsed = false;
+
+    cout << "===== QUIZ WITH LIFELINES =====" << endl;
+
+    cout << "Enter Your Name: ";
+    cin >> name;
+
+    for(int i = 0; i < 3; i++)
+    {
+        cout << "\nQuestion " << i + 1 << ": "
+             << quiz[i].question << endl;
+
+        cout << quiz[i].option1 << endl;
+        cout << quiz[i].option2 << endl;
+        cout << quiz[i].option3 << endl;
+        cout << quiz[i].option4 << endl;
+
+        cout << "\nAvailable Lifelines:" << endl;
+
+        if(!fiftyUsed)
+            cout << "1. 50-50" << endl;
+
+        if(!skipUsed)
+            cout << "2. Skip Question" << endl;
+
+        if(!askAgainUsed)
+            cout << "3. Ask Again" << endl;
+
+        cout << "4. No Lifeline" << endl;
+
+        int choice;
+        cout << "Choose option: ";
+        cin >> choice;
+
+        if(choice == 1 && !fiftyUsed)
+        {
+            fiftyUsed = true;
+
+            cout << "\n50-50 Applied!" << endl;
+            cout << quiz[i].option1 << endl;
+            cout << quiz[i].option2 << endl;
+        }
+
+        else if(choice == 2 && !skipUsed)
+        {
+            skipUsed = true;
+
+            cout << "Question Skipped!" << endl;
+            continue;
+        }
+
+        cout << "Enter Your Answer: ";
+        cin >> answer;
+
+        if(answer == quiz[i].correctAnswer)
+        {
+            cout << "Correct Answer!" << endl;
+            score++;
+        }
+        else
+        {
+            if(choice == 3 && !askAgainUsed)
+            {
+                askAgainUsed = true;
+
+                cout << "Try Again: ";
+                cin >> answer;
+
+                if(answer == quiz[i].correctAnswer)
+                {
+                    cout << "Correct Answer!" << endl;
+                    score++;
+                }
+                else
+                {
+                    cout << "Wrong Answer!" << endl;
+                }
+            }
+            else
+            {
+                cout << "Wrong Answer!" << endl;
+            }
+        }
+
+        cout << "Current Score: " << score << endl;
+    }
+
+    cout << "\n===== FINAL RESULT =====" << endl;
+    cout << "Player Name: " << name << endl;
+    cout << "Final Score: " << score << endl;
+
+    ofstream file("quiz_history.txt", ios::app);
+
+    file << "Name: " << name
+         << " | Score: " << score
+         << " | 50-50: " << (fiftyUsed ? "Used" : "Not Used")
+         << " | Skip: " << (skipUsed ? "Used" : "Not Used")
+         << " | Ask Again: " << (askAgainUsed ? "Used" : "Not Used")
+         << endl;
+
+    file.close();
+
+    cout << "\nQuiz history saved successfully." << endl;
+
+    return 0;
+}
